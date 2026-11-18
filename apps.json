@@ -1,0 +1,21 @@
+[
+  {
+    "name": "Notes",
+    "description": "Catatan, literatur, dan metode penelitian.",
+    "href": "./notes/",
+    "icon": "notes"
+  },
+  {
+    "name": "Datasets",
+    "description": "Katalog abstrak dan detail dokumen.",
+    "href": "./datasets/",
+    "icon": "database"
+  },
+  {
+    "name": "Laporan",
+    "description": "Dokumen penulisan skripsi.",
+    "href": "./notes/laporan-skripsi.html",
+    "icon": "document",
+    "requiresReport": true
+  }
+]

@@ -1,0 +1,88 @@
+name: Deploy thesis to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [content-updated]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out thesis
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check out notes
+        uses: actions/checkout@v4
+        with:
+          repository: riotrip/notes
+          ref: main
+          path: _src/notes
+          token: ${{ secrets.SOURCE_READ_TOKEN || github.token }}
+          persist-credentials: false
+      - name: Check out datasets
+        uses: actions/checkout@v4
+        with:
+          repository: riotrip/datasets
+          ref: main
+          path: _src/datasets
+          token: ${{ secrets.SOURCE_READ_TOKEN || github.token }}
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.15.0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: _src/notes/pnpm-lock.yaml
+      - name: Install notes dependencies
+        working-directory: _src/notes
+        run: pnpm install --frozen-lockfile
+      - name: Test and build notes
+        working-directory: _src/notes
+        run: |
+          pnpm test
+          pnpm build
+      - name: Test datasets
+        working-directory: _src/datasets
+        run: npm test
+      - name: Assemble
+        run: |
+          mkdir -p _site/notes _site/datasets
+          cp -R _src/notes/dist/. _site/notes/
+          cp _src/datasets/index.html _src/datasets/styles.css _src/datasets/catalog.json _site/datasets/
+          cp -R _src/datasets/public _src/datasets/src _site/datasets/
+          node build-hub.mjs
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
