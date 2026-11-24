@@ -12,10 +12,9 @@
     "icon": "database"
   },
   {
-    "name": "Laporan",
-    "description": "Dokumen penulisan skripsi.",
-    "href": "./notes/laporan-skripsi.html",
-    "icon": "document",
-    "requiresReport": true
+    "name": "Laporan Skripsi",
+    "description": "Buka dokumen laporan skripsi di Google Docs.",
+    "href": "https://docs.google.com/document/d/1x-UUVdRoHzz_sWC0_GaFvTQsWcbJpnNrxmvLgTRaZ00/edit?usp=sharing",
+    "icon": "document"
   }
 ]

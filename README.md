@@ -35,7 +35,7 @@ Tambahkan objek ke `apps.json`; urutan array menentukan urutan tile:
 }
 ```
 
-`name`, `description`, dan `href` wajib diisi. `icon` opsional: `app` (default), `notes`, `database`, atau `document`. Tautan boleh berupa `./subfolder/` atau URL lengkap `https://...` / `http://...`; semuanya terbuka di tab yang sama. Teks di-escape saat build. `requiresReport: true` hanya untuk akses laporan yang disembunyikan bila notes tidak menghasilkan embed laporan valid.
+`name`, `description`, and `href` are required. Optional `icon`: `app` (default), `notes`, `database`, or `document`. Links may be relative (`./subfolder/`) or absolute (`https://...` / `http://...`). Every app tile opens in a new tab. Text is escaped during the build.
 
 Entri baru tidak otomatis meng-host aplikasinya:
 - Aplikasi eksternal: isi `href` dengan URL situs yang sudah tersedia; tidak perlu mengubah workflow.

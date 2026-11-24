@@ -13,11 +13,6 @@ const escape = (text) => text.replace(/[&<>"']/g, (char) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 })[char]);
 if (!Array.isArray(apps)) throw new Error('apps.json must be an array');
-let reportAvailable = false;
-if (apps.some((app) => app?.requiresReport === true)) {
-  const report = await readFile(path.join(site, 'notes/laporan-skripsi.html'), 'utf8');
-  reportAvailable = /<iframe\s[^>]*src="https:\/\/docs\.google\.com\/document\/d\//.test(report);
-}
 const tiles = [];
 for (const app of apps) {
   if (!app || ['name', 'description', 'href'].some((key) => typeof app[key] !== 'string' || !app[key].trim())) {
@@ -29,11 +24,7 @@ for (const app of apps) {
   new URL(app.href, 'https://example.org/thesis/');
   const icon = app.icon ?? 'app';
   if (!Object.hasOwn(icons, icon)) throw new Error(`Unknown icon: ${icon}`);
-  if (app.requiresReport !== undefined && typeof app.requiresReport !== 'boolean') {
-    throw new Error('requiresReport must be a boolean');
-  }
-  if (app.requiresReport && !reportAvailable) continue;
-  tiles.push(`<a class="app" href="${escape(app.href)}">
+  tiles.push(`<a class="app" href="${escape(app.href)}" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" aria-hidden="true">${icons[icon]}</svg>
         <div><h2>${escape(app.name)}</h2><p>${escape(app.description)}</p></div>
         <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg>
